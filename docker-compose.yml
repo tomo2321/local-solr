@@ -1,0 +1,22 @@
+services:
+  solr:
+    image: solr:8.11-slim
+    container_name: local-solr
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr-data:/var/solr
+    environment:
+      - SOLR_HEAP=512m
+    command:
+      - solr-precreate
+      - mycore
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8983/solr/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  solr-data:
